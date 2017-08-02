@@ -1,11 +1,16 @@
 from math import *
 
+"""
+KS key profiles for C major and minor
+"""
 MajorKeyProfile = [6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88]
 MinorKeyProfile = [6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17]
 MajorKeyAvg = float(sum(MajorKeyProfile)) / len(MajorKeyProfile)
 MinorKeyAvg = float(sum(MinorKeyProfile)) / len(MinorKeyProfile)
 
 """
+score(pitchClassDurations, testKey, isMajor)
+
 KS Key Profile evaluation function
 
 in:
@@ -39,3 +44,18 @@ def score(pitchClassDurations, testKey, isMajor):
         sum_dify2 += (y[i] - y_avg)**2
 
     return sum_xy / sqrt(sum_difx2 * sum_dify2)
+
+"""
+finds the best key profile match
+
+in:
+    pitchClassDurations     list    indexed by pitch class, where C -> 0, etc.
+                                    values: total duration of each pitch class
+
+out:
+    key, major              int, bool
+"""
+def findKeyMatch(pitchClassDurations):
+    scores = {(i, m): score(pitchClassDurations, i, m) for i in range(12) for m in [True, False]}
+    bestKey = max(scores, key=lambda x: scores[x])
+    return bestKey, scores[bestKey]
